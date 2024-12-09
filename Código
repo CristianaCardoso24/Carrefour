@@ -1,0 +1,147 @@
+Código
+1. aplicativo
+Pitão
+Cópia
+from flask import Flask, render_template, request, redirect, url_for
+import sqlite3
+
+app = Flask(__name__)
+
+# Função para conectar ao banco de dados
+def get_db_connection():
+    conn = sqlite3.connect('fluxo_caixa.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# Rota inicial
+@app.route('/')
+def index():
+    conn = get_db_connection()
+    lancamentos = conn.execute('SELECT * FROM lancamentos').fetchall()
+    conn.close()
+    return render_template('index.html', lancamentos=lancamentos)
+
+# Rota para registrar lançamentos
+@app.route('/new', methods=['POST'])
+def new_lancamento():
+    descricao = request.form['descricao']
+    valor = request.form['valor']
+    tipo = request.form['tipo']  # 'debito' ou 'credito'
+
+    conn = get_db_connection()
+    conn.execute('INSERT INTO lancamentos (descricao, valor, tipo) VALUES (?, ?, ?)',
+                 (descricao, valor, tipo))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('index'))
+
+# Rota para gerar relatórios diários
+@app.route('/report')
+def report():
+    conn = get_db_connection()
+    lancamentos = conn.execute('SELECT tipo, SUM(valor) as total FROM lancamentos GROUP BY tipo').fetchall()
+    conn.close()
+    return render_template('report.html', lancamentos=lancamentos)
+
+# Inicializa o banco de dados
+def init_db():
+    conn = get_db_connection()
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS lancamentos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            descricao TEXT NOT NULL,
+            valor REAL NOT NULL,
+            tipo TEXT NOT NULL
+        )
+    ''')
+    conn.close()
+
+if __name__ == '__main__':
+    init_db()  # Cria o banco de dados ao iniciar
+    app.run(debug=True)
+2.
+HTML->
+Cópia
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="static/style.css">
+    <title>Controle de Fluxo de Caixa</title>
+</head>
+<body>
+    <h1>Controle de Fluxo de Caixa</h1>
+    <form method="POST" action="/new">
+        <input type="text" name="descricao" placeholder="Descrição" required>
+        <input type="number" step="0.01" name="valor" placeholder="Valor" required>
+        <select name="tipo">
+            <option value="credito">Crédito</option>
+            <option value="debito">Débito</option>
+        </select>
+        <button type="submit">Adicionar Lançamento</button>
+    </form>
+
+    <h2>Histórico de Lançamentos</h2>
+    <ul>
+        {% for lancamento in lancamentos %}
+            <li>{{ lancamento.descricao }} - {{ lancamento.valor }} - {{ lancamento.tipo }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/report">Gerar Relatório</a>
+</body>
+</html>
+3. modelos/relatório.html
+texto
+Cópia
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="static/style.css">
+    <title>Relatório Diário</title>
+</head>
+<body>
+    <h1>Relatório Diário</h1>
+    <table>
+        <tr>
+            <th>Tipo</th>
+            <th>Total</th>
+        </tr>
+        {% for lancamento in lancamentos %}
+            <tr>
+                <td>{{ lancamento.tipo }}</td>
+                <td>{{ lancamento.total }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Voltar</a>
+</body>
+</html>
+4. estático/estilo.css
+css
+Cópia
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+form input, form select {
+    margin: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
