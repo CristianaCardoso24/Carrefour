@@ -1,0 +1,63 @@
+1. Requisitos de Negócio
+Serviço que faz o controle de lançamentos
+Registro de lançamentos (débitos e créditos).
+Armazenamento em banco de dados.
+Serviço do diário consolidado
+Geração de relatórios diários com o saldo consolidado.
+
+2. Mapeamento de Domínios Funcionais e Capacidades de Negócio
+Domínio : Controle Financeiro
+Capacidades :
+Realizar lançamentos financeiros
+Consolidar saldos diários
+Consultar histórico de lançamentos
+
+3. Levantamento de Requisitos Funcionais e Não Funcionais
+Requisitos Funcionais
+Criar lançamento (débito ou crédito)
+Listar lançamentos
+Gerar relatório diário de saldo
+Consultar saldo atual
+
+Requisitos Não Funcionais
+Segurança: autenticação de usuários
+Escalabilidade: capacidade de suportar múltiplos usuários
+Usabilidade: interface intuitiva
+
+4. Desenho da Solução Completa (Arquitetura Alvo)
+Arquitetura : MVC (Modelo, Visão, Controle)
+
+Tecnologias :
+Backend : Python (Flask ou Django)
+Banco de Dados : SQLite (para simplicidade), pode ser trocado por PostgreSQL ou MySQL em ambiente de produção.
+Frontend : HTML/CSS com Bootstrap para interface simples.
+
+5. Justificativa na Decisão/Escolha de Ferramentas/Tecnologias
+Python : linguagem simples e poderosa, com vasta biblioteca e comunidade ativa.
+Flask/Django : ambos são frameworks robustos para construção de aplicações web, permitindo rápida implementação do sistema.
+SQLite : banco de dados leve e fácil de usar para desenvolvimento inicial, com opção de escalabilidade futura.
+
+6. Instruções de Como a Aplicação Funciona
+Instalação
+
+Clonar o repositório:
+
+git clone https://github.com/SEU_USUARIO/nome_do_projeto.git
+cd nome_do_projeto
+Crie e ative o ambiente virtual:
+
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate  # Windows
+Instalar as dependências:
+
+pip install -r requirements.txt
+Execução
+Rodar a aplicação:
+
+bater
+python app.py
+Acesse o aplicativo no navegador:
+
+texto
+http://127.0.0.1:5000
