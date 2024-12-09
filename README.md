@@ -1,5 +1,3 @@
-# Carrefour
-redução de preço
 # Controle de Fluxo de Caixa
 
 Esse projeto é uma aplicação web desenvolvida para auxiliar comerciantes no controle do fluxo de caixa diário, permitindo o registro de lançamentos financeiros (débito e crédito) e a geração de relatórios diários com saldos consolidados.
